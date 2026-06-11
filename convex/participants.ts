@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
 import { MutationCtx, mutation, query } from "./_generated/server";
 import { requireParticipant } from "./lib/access";
+import { appError } from "./lib/errors";
 
 export interface ParticipantView {
   participantId: Id<"participants">;
@@ -19,7 +20,10 @@ async function findUserByEmail(
     .withIndex("email", (q) => q.eq("email", email))
     .unique();
   if (user === null) {
-    throw new Error(`No user found with email ${email}`);
+    throw appError(
+      "USER_NOT_FOUND",
+      `No se encontró ningún usuario con el correo ${email}.`,
+    );
   }
   return user;
 }
@@ -119,8 +123,9 @@ export const remove = mutation({
       return;
     }
     if (await appearsInAnyItem(ctx, projectId, userId)) {
-      throw new Error(
-        "Cannot remove a participant who still appears in project items",
+      throw appError(
+        "PARTICIPANT_IN_USE",
+        "No se puede quitar a un participante que aún aparece en gastos, ingresos o liquidaciones del proyecto.",
       );
     }
     await ctx.db.delete(membership._id);

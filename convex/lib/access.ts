@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "../_generated/dataModel";
 import { MutationCtx, QueryCtx } from "../_generated/server";
+import { appError } from "./errors";
 
 type Ctx = QueryCtx | MutationCtx;
 
@@ -8,7 +9,7 @@ type Ctx = QueryCtx | MutationCtx;
 export async function requireUserId(ctx: Ctx): Promise<Id<"users">> {
   const userId = await getAuthUserId(ctx);
   if (userId === null) {
-    throw new Error("Not authenticated");
+    throw appError("NOT_AUTHENTICATED", "Debes iniciar sesión.");
   }
   return userId;
 }
@@ -28,7 +29,7 @@ export async function requireParticipant(
     )
     .unique();
   if (membership === null) {
-    throw new Error("Not a participant of this project");
+    throw appError("NOT_PARTICIPANT", "No eres participante de este proyecto.");
   }
   return userId;
 }

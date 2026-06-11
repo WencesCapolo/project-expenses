@@ -2,6 +2,7 @@ import { Infer } from "convex/values";
 import { Id } from "../_generated/dataModel";
 import { MutationCtx, QueryCtx } from "../_generated/server";
 import { splitValidator } from "./validators";
+import { appError } from "./errors";
 
 type Ctx = QueryCtx | MutationCtx;
 type Split = Infer<typeof splitValidator>;
@@ -11,13 +12,13 @@ const PERIOD_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
 // A Period is a calendar month tagged "YYYY-MM". CONTEXT.md → Period.
 export function assertPeriod(period: string): void {
   if (!PERIOD_PATTERN.test(period)) {
-    throw new Error(`Period must be in YYYY-MM format, got "${period}"`);
+    throw appError("INVALID_PERIOD", "El mes debe tener el formato AAAA-MM.");
   }
 }
 
 export function assertPositiveCents(amountCents: number): void {
   if (!Number.isInteger(amountCents) || amountCents <= 0) {
-    throw new Error("Amount must be a positive whole number of cents");
+    throw appError("INVALID_AMOUNT", "El monto debe ser positivo.");
   }
 }
 
@@ -43,13 +44,16 @@ export async function assertUsersAreParticipants(
   const participants = await participantIds(ctx, projectId);
   for (const userId of userIds) {
     if (!participants.has(userId)) {
-      throw new Error("All actors and beneficiaries must be project participants");
+      throw appError(
+        "NOT_PARTICIPANTS",
+        "Todos los actores y beneficiarios deben ser participantes del proyecto.",
+      );
     }
   }
 }
 
 export function assertHasBeneficiaries(split: Split): void {
   if (split.beneficiaries.length === 0) {
-    throw new Error("At least one beneficiary is required");
+    throw appError("NO_BENEFICIARIES", "Se requiere al menos un beneficiario.");
   }
 }

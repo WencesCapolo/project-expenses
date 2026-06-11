@@ -4,6 +4,7 @@ import { mutation, query } from "./_generated/server";
 import { requireParticipant } from "./lib/access";
 import { assertValidItem } from "./lib/items";
 import { attachmentsValidator, splitValidator } from "./lib/validators";
+import { appError } from "./lib/errors";
 
 // Record a cost fronted by one Payer for a set of Beneficiaries. The split is
 // snapshotted onto the Expense at creation. CONTEXT.md → Expense.
@@ -59,7 +60,7 @@ export const update = mutation({
   handler: async (ctx, { expenseId, ...fields }) => {
     const expense = await ctx.db.get(expenseId);
     if (expense === null) {
-      throw new Error("Expense not found");
+      throw appError("EXPENSE_NOT_FOUND", "No se encontró el gasto.");
     }
     await requireParticipant(ctx, expense.projectId);
     await assertValidItem(ctx, {

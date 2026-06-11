@@ -4,6 +4,7 @@ import { mutation, query } from "./_generated/server";
 import { requireParticipant } from "./lib/access";
 import { assertValidItem } from "./lib/items";
 import { attachmentsValidator, splitValidator } from "./lib/validators";
+import { appError } from "./lib/errors";
 
 // Record money from outside the group, held by one Recipient and credited to
 // the Beneficiaries — the mirror of an Expense. CONTEXT.md → Income.
@@ -59,7 +60,7 @@ export const update = mutation({
   handler: async (ctx, { incomeId, ...fields }) => {
     const income = await ctx.db.get(incomeId);
     if (income === null) {
-      throw new Error("Income not found");
+      throw appError("INCOME_NOT_FOUND", "No se encontró el ingreso.");
     }
     await requireParticipant(ctx, income.projectId);
     await assertValidItem(ctx, {

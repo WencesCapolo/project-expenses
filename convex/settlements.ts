@@ -8,6 +8,7 @@ import {
   assertUsersAreParticipants,
 } from "./lib/guards";
 import { attachmentsValidator } from "./lib/validators";
+import { appError } from "./lib/errors";
 
 // Record an actual transfer that clears debt, full or partial. CONTEXT.md →
 // Settlement (a transfer between Participants, not an Income).
@@ -26,7 +27,10 @@ export const create = mutation({
     assertPositiveCents(args.amountCents);
     assertPeriod(args.period);
     if (args.fromUserId === args.toUserId) {
-      throw new Error("A settlement must be between two different participants");
+      throw appError(
+        "SAME_PARTICIPANT",
+        "Una liquidación debe ser entre dos participantes distintos.",
+      );
     }
     await assertUsersAreParticipants(ctx, args.projectId, [
       args.fromUserId,

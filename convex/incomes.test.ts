@@ -19,23 +19,42 @@ const equalSplit = (...userIds: Id<"users">[]) => ({
   beneficiaries: userIds.map((userId) => ({ userId })),
 });
 
-test("registers and lists an expense for its period", async () => {
+test("registers and lists an income for its period", async () => {
   const { as, projectId, anaId, bobId } = await projectWithAnaAndBob();
 
-  await as.mutation(api.expenses.create, {
+  await as.mutation(api.incomes.create, {
     projectId,
-    title: "Hotel",
+    title: "Client payment",
+    description: "March sprint invoice",
     amountCents: 12000,
-    payerId: anaId,
+    recipientId: anaId,
     split: equalSplit(anaId, bobId),
     period: "2026-06",
     attachments: [],
   });
 
-  const june = await as.query(api.expenses.listByPeriod, { projectId, period: "2026-06" });
-  const may = await as.query(api.expenses.listByPeriod, { projectId, period: "2026-05" });
+  const june = await as.query(api.incomes.listByPeriod, { projectId, period: "2026-06" });
+  const may = await as.query(api.incomes.listByPeriod, { projectId, period: "2026-05" });
   expect(june).toHaveLength(1);
   expect(may).toHaveLength(0);
+});
+
+test("rejects a recipient who is not a participant", async () => {
+  const { t, as, projectId, anaId } = await projectWithAnaAndBob();
+  const strangerId = await t.run((db) => db.db.insert("users", { email: "stranger@example.com" }));
+
+  await expect(
+    as.mutation(api.incomes.create, {
+      projectId,
+      title: "Client payment",
+      description: "March sprint invoice",
+      amountCents: 12000,
+      recipientId: strangerId,
+      split: equalSplit(anaId),
+      period: "2026-06",
+      attachments: [],
+    }),
+  ).rejects.toThrow();
 });
 
 test("rejects a beneficiary who is not a participant", async () => {
@@ -43,29 +62,13 @@ test("rejects a beneficiary who is not a participant", async () => {
   const strangerId = await t.run((db) => db.db.insert("users", { email: "stranger@example.com" }));
 
   await expect(
-    as.mutation(api.expenses.create, {
+    as.mutation(api.incomes.create, {
       projectId,
-      title: "Hotel",
+      title: "Client payment",
+      description: "March sprint invoice",
       amountCents: 12000,
-      payerId: anaId,
+      recipientId: anaId,
       split: equalSplit(anaId, strangerId),
-      period: "2026-06",
-      attachments: [],
-    }),
-  ).rejects.toThrow();
-});
-
-test("rejects a payer who is not a participant", async () => {
-  const { t, as, projectId, anaId } = await projectWithAnaAndBob();
-  const strangerId = await t.run((db) => db.db.insert("users", { email: "stranger@example.com" }));
-
-  await expect(
-    as.mutation(api.expenses.create, {
-      projectId,
-      title: "Hotel",
-      amountCents: 12000,
-      payerId: strangerId,
-      split: equalSplit(anaId),
       period: "2026-06",
       attachments: [],
     }),
@@ -75,11 +78,12 @@ test("rejects a payer who is not a participant", async () => {
 test("rejects a non-positive amount", async () => {
   const { as, projectId, anaId } = await projectWithAnaAndBob();
   await expect(
-    as.mutation(api.expenses.create, {
+    as.mutation(api.incomes.create, {
       projectId,
-      title: "Hotel",
+      title: "Client payment",
+      description: "March sprint invoice",
       amountCents: 0,
-      payerId: anaId,
+      recipientId: anaId,
       split: equalSplit(anaId),
       period: "2026-06",
       attachments: [],
@@ -90,11 +94,12 @@ test("rejects a non-positive amount", async () => {
 test("rejects an empty beneficiary set", async () => {
   const { as, projectId, anaId } = await projectWithAnaAndBob();
   await expect(
-    as.mutation(api.expenses.create, {
+    as.mutation(api.incomes.create, {
       projectId,
-      title: "Hotel",
+      title: "Client payment",
+      description: "March sprint invoice",
       amountCents: 1000,
-      payerId: anaId,
+      recipientId: anaId,
       split: { mode: "equal", beneficiaries: [] },
       period: "2026-06",
       attachments: [],
@@ -105,14 +110,34 @@ test("rejects an empty beneficiary set", async () => {
 test("rejects a malformed period", async () => {
   const { as, projectId, anaId } = await projectWithAnaAndBob();
   await expect(
-    as.mutation(api.expenses.create, {
+    as.mutation(api.incomes.create, {
       projectId,
-      title: "Hotel",
+      title: "Client payment",
+      description: "March sprint invoice",
       amountCents: 1000,
-      payerId: anaId,
+      recipientId: anaId,
       split: equalSplit(anaId),
       period: "2026-13",
       attachments: [],
     }),
+  ).rejects.toThrow();
+});
+
+test("cannot remove a participant who appears in an income", async () => {
+  const { as, projectId, anaId, bobId } = await projectWithAnaAndBob();
+
+  await as.mutation(api.incomes.create, {
+    projectId,
+    title: "Client payment",
+    description: "March sprint invoice",
+    amountCents: 12000,
+    recipientId: anaId,
+    split: equalSplit(anaId, bobId),
+    period: "2026-06",
+    attachments: [],
+  });
+
+  await expect(
+    as.mutation(api.participants.remove, { projectId, userId: bobId }),
   ).rejects.toThrow();
 });

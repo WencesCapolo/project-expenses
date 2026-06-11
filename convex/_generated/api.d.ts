@@ -15,6 +15,7 @@ import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as incomes from "../incomes.js";
 import type * as lib_access from "../lib/access.js";
+import type * as lib_errors from "../lib/errors.js";
 import type * as lib_guards from "../lib/guards.js";
 import type * as lib_items from "../lib/items.js";
 import type * as lib_validators from "../lib/validators.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   incomes: typeof incomes;
   "lib/access": typeof lib_access;
+  "lib/errors": typeof lib_errors;
   "lib/guards": typeof lib_guards;
   "lib/items": typeof lib_items;
   "lib/validators": typeof lib_validators;

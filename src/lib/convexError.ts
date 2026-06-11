@@ -1,13 +1,22 @@
-// Convex wraps a thrown Error as "... Uncaught Error: <message>\n    at ...".
-// This pulls the original domain message back out so the UI can show the
-// backend's reason (bad amount, non-participant, …) instead of the wrapper.
-//
-// NOTE: in production Convex strips plain-Error messages to "Server Error";
-// the fallback is shown then. Moving backend throws to ConvexError (issue #12)
-// makes these reasons reliable in all environments.
+import { ConvexError } from "convex/values";
+
+// Backend mutations throw ConvexError with a structured { code, message }
+// payload (convex/lib/errors.ts). Unlike a plain Error — whose text Convex
+// strips to "Server Error" in production — the `data` payload survives to the
+// client in every environment, so the precise reason is always available.
+// Falls back to a caller-supplied message when the error is not one of ours.
+// CONTEXT.md → issue #12.
 export function convexErrorMessage(err: unknown, fallback: string): string {
-  const raw = err instanceof Error ? err.message : String(err);
-  const match = raw.match(/Uncaught Error:\s*([^\n]*?)(?:\s+at\s|\n|$)/);
-  const message = match?.[1]?.trim();
-  return message && message !== "Server Error" ? message : fallback;
+  if (err instanceof ConvexError) {
+    const data: unknown = err.data;
+    if (
+      typeof data === "object" &&
+      data !== null &&
+      "message" in data &&
+      typeof (data as { message: unknown }).message === "string"
+    ) {
+      return (data as { message: string }).message;
+    }
+  }
+  return fallback;
 }

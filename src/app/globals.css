@@ -16,6 +16,8 @@
   --primary-foreground: #ffffff;
   --danger: #dc2626;
   --danger-foreground: #ffffff;
+  --success: #16a34a;
+  --success-foreground: #ffffff;
   --ring: #a5b4fc;
 }
 
@@ -31,6 +33,8 @@
     --primary-foreground: #ffffff;
     --danger: #ef4444;
     --danger-foreground: #ffffff;
+    --success: #22c55e;
+    --success-foreground: #ffffff;
     --ring: #4338ca;
   }
 }
@@ -46,6 +50,8 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
