@@ -7,15 +7,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-
-// Picks the meaningful sentence out of a Convex error so the user sees the
-// backend's reason (e.g. "No user found…", "still appears in project items")
-// rather than the wrapped "Uncaught Error / Request ID" noise.
-function readableError(err: unknown, fallback: string): string {
-  const raw = err instanceof Error ? err.message : String(err);
-  const match = raw.match(/(No user found[^\n]*|Cannot remove[^\n]*)/);
-  return match ? match[1].trim() : fallback;
-}
+import { convexErrorMessage } from "@/lib/convexError";
 
 // Membership management for a single Project: list members, add an existing
 // User by email, remove an uninvolved member. (#6)
@@ -44,7 +36,7 @@ export default function ParticipantsPanel({
       await addParticipant({ projectId, email: email.trim().toLowerCase() });
       setEmail("");
     } catch (err) {
-      setAddError(readableError(err, "Could not add that participant."));
+      setAddError(convexErrorMessage(err, "Could not add that participant."));
     } finally {
       setAdding(false);
     }
@@ -58,7 +50,7 @@ export default function ParticipantsPanel({
     } catch (err) {
       setRowError({
         userId,
-        message: readableError(err, "Could not remove that participant."),
+        message: convexErrorMessage(err, "Could not remove that participant."),
       });
     } finally {
       setRemovingId(null);

@@ -8,6 +8,7 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import ParticipantsPanel from "@/components/projects/ParticipantsPanel";
+import ExpensesSection from "@/components/expenses/ExpensesSection";
 
 // Project detail. Reads projects.get, which also enforces the viewer is a
 // Participant. Money views (expenses, incomes, settlements, balance) mount
@@ -45,9 +46,14 @@ export default function ProjectDetailPage({
             }`}
           />
           <ParticipantsPanel projectId={project._id} />
+          <ExpensesSection
+            projectId={project._id}
+            currency={project.currency}
+            defaultSplitMode={project.defaultSplitMode}
+          />
           <Card>
             <p className="text-sm text-muted">
-              Expenses, incomes, settlements and balance arrive in later slices.
+              Incomes, settlements and balance arrive in later slices.
             </p>
           </Card>
         </>
