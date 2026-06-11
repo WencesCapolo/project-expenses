@@ -2,73 +2,103 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
+import Card from "@/components/ui/Card";
+import Field from "@/components/ui/Field";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 
-// Minimal email + password form for the Password provider.
-// Toggles between sign-in and sign-up via the `flow` field.
+type Flow = "signIn" | "signUp";
+
+const COPY = {
+  signIn: {
+    heading: "Iniciar sesión",
+    submit: "Iniciar sesión",
+    toggle: "¿No tienes cuenta? Regístrate",
+    error: "No se pudo iniciar sesión. Revisa tu correo y contraseña.",
+  },
+  signUp: {
+    heading: "Crear cuenta",
+    submit: "Registrarse",
+    toggle: "¿Ya tienes cuenta? Inicia sesión",
+    error: "No se pudo crear la cuenta. Ese correo quizás ya está en uso.",
+  },
+} as const;
+
+// Email + password entry for the Convex Auth Password provider. One form
+// covers both flows: the `flow` field tells the backend whether to create an
+// account or authenticate an existing one. On success the provider sets the
+// session and the surrounding <Authenticated> gate routes into the app.
 export default function SignInForm() {
   const { signIn } = useAuthActions();
-  const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
+  const [flow, setFlow] = useState<Flow>("signIn");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setPending(true);
+    const data = new FormData(event.currentTarget);
+    data.set("flow", flow);
+    try {
+      await signIn("password", data);
+    } catch {
+      setError(COPY[flow].error);
+      setPending(false);
+    }
+  }
+
+  function toggleFlow() {
+    setError(null);
+    setFlow((current) => (current === "signIn" ? "signUp" : "signIn"));
+  }
+
+  const copy = COPY[flow];
+
   return (
-    <form
-      className="flex flex-col gap-3 w-full max-w-sm"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setError(null);
-        setPending(true);
-        const data = new FormData(e.currentTarget);
-        data.set("flow", flow);
-        try {
-          await signIn("password", data);
-        } catch {
-          setError(
-            flow === "signIn"
-              ? "No se pudo iniciar sesión. Revisa tus credenciales."
-              : "No se pudo crear la cuenta. El correo quizás ya está en uso.",
-          );
-        } finally {
-          setPending(false);
-        }
-      }}
-    >
-      <h1 className="text-xl font-semibold">
-        {flow === "signIn" ? "Iniciar sesión" : "Crear cuenta"}
-      </h1>
-      <input
-        className="border rounded px-3 py-2"
-        type="email"
-        name="email"
-        placeholder="Correo electrónico"
-        autoComplete="email"
-        required
-      />
-      <input
-        className="border rounded px-3 py-2"
-        type="password"
-        name="password"
-        placeholder="Contraseña"
-        autoComplete={flow === "signIn" ? "current-password" : "new-password"}
-        required
-      />
-      <button
-        className="bg-foreground text-background rounded px-3 py-2 disabled:opacity-50"
-        type="submit"
-        disabled={pending}
-      >
-        {flow === "signIn" ? "Iniciar sesión" : "Registrarse"}
-      </button>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
+    <Card className="w-full max-w-sm space-y-5">
+      <h1 className="text-xl font-semibold">{copy.heading}</h1>
+
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <Field label="Correo electrónico" htmlFor="auth-email">
+          <Input
+            id="auth-email"
+            type="email"
+            name="email"
+            placeholder="tu@correo.com"
+            autoComplete="email"
+            required
+            autoFocus
+          />
+        </Field>
+
+        <Field label="Contraseña" htmlFor="auth-password">
+          <Input
+            id="auth-password"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            autoComplete={flow === "signIn" ? "current-password" : "new-password"}
+            required
+          />
+        </Field>
+
+        {error && <p className="text-sm text-danger">{error}</p>}
+
+        <Button type="submit" disabled={pending}>
+          {pending ? "Procesando…" : copy.submit}
+        </Button>
+      </form>
+
+      <Button
         type="button"
-        className="text-sm underline self-start"
-        onClick={() => setFlow(flow === "signIn" ? "signUp" : "signIn")}
+        variant="ghost"
+        size="sm"
+        className="self-start px-0"
+        onClick={toggleFlow}
       >
-        {flow === "signIn"
-          ? "¿No tienes cuenta? Regístrate"
-          : "¿Ya tienes cuenta? Inicia sesión"}
-      </button>
-    </form>
+        {copy.toggle}
+      </Button>
+    </Card>
   );
 }
