@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Project Expenses",
+  title: "Convolution.Expenses",
   description: "Track and settle shared project expenses",
 };
 

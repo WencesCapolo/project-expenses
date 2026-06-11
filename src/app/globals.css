@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
+/*
+ * Visual baseline for the internal expense tool.
+ * Semantic tokens (surface/border/muted/primary/danger) so later slices
+ * style against intent, not raw hex. Light + dark via prefers-color-scheme.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #f7f7f8;
+  --surface: #ffffff;
+  --surface-muted: #f1f1f3;
+  --foreground: #18181b;
+  --muted: #6b7280;
+  --border: #e4e4e7;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --danger: #dc2626;
+  --danger-foreground: #ffffff;
+  --ring: #a5b4fc;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #09090b;
+    --surface: #18181b;
+    --surface-muted: #1f1f23;
+    --foreground: #fafafa;
+    --muted: #a1a1aa;
+    --border: #2a2a30;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --danger: #ef4444;
+    --danger-foreground: #ffffff;
+    --ring: #4338ca;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius: 0.625rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }

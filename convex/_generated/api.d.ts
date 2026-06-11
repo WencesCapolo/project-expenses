@@ -21,6 +21,7 @@ import type * as lib_validators from "../lib/validators.js";
 import type * as participants from "../participants.js";
 import type * as projects from "../projects.js";
 import type * as settlements from "../settlements.js";
+import type * as testing from "../testing.js";
 
 import type {
   ApiFromModules,
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   participants: typeof participants;
   projects: typeof projects;
   settlements: typeof settlements;
+  testing: typeof testing;
 }>;
 
 /**
