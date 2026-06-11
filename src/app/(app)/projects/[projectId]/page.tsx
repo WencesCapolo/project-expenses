@@ -1,27 +1,57 @@
+"use client";
+
+import { use } from "react";
 import Link from "next/link";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { Id } from "../../../../../convex/_generated/dataModel";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
+import ParticipantsPanel from "@/components/projects/ParticipantsPanel";
 
-// Project detail. Expenses, incomes, settlements and balance views mount here
-// in later slices. For now it proves nav into and back out of a Project.
-export default async function ProjectDetailPage({
+// Project detail. Reads projects.get, which also enforces the viewer is a
+// Participant. Money views (expenses, incomes, settlements, balance) mount
+// here in later slices.
+export default function ProjectDetailPage({
   params,
 }: {
   params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = await params;
+  const { projectId } = use(params);
+  const project = useQuery(api.projects.get, {
+    projectId: projectId as Id<"projects">,
+  });
+
   return (
     <div className="space-y-6">
       <Link href="/projects" className="text-sm text-muted hover:text-foreground">
         ← Back to projects
       </Link>
-      <PageHeader title="Project" description={`Detail view for "${projectId}".`} />
-      <Card>
-        <p className="text-sm text-muted">
-          Project content (expenses, incomes, settlements, balance) arrives in
-          later slices.
-        </p>
-      </Card>
+
+      {project === undefined ? (
+        <p className="text-sm text-muted">Loading…</p>
+      ) : project === null ? (
+        <Card>
+          <p className="text-sm text-muted">
+            Project not found, or you don&apos;t have access.
+          </p>
+        </Card>
+      ) : (
+        <>
+          <PageHeader
+            title={project.name}
+            description={`${project.currency} · Default split: ${
+              project.defaultSplitMode === "equal" ? "Equal" : "Weighted shares"
+            }`}
+          />
+          <ParticipantsPanel projectId={project._id} />
+          <Card>
+            <p className="text-sm text-muted">
+              Expenses, incomes, settlements and balance arrive in later slices.
+            </p>
+          </Card>
+        </>
+      )}
     </div>
   );
 }
