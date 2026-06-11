@@ -10,6 +10,7 @@ import Card from "@/components/ui/Card";
 import ParticipantsPanel from "@/components/projects/ParticipantsPanel";
 import ExpensesSection from "@/components/expenses/ExpensesSection";
 import IncomesSection from "@/components/incomes/IncomesSection";
+import SettlementsSection from "@/components/settlements/SettlementsSection";
 
 // Project detail. Reads projects.get, which also enforces the viewer is a
 // Participant. Money views (expenses, incomes, settlements, balance) mount
@@ -59,9 +60,13 @@ export default function ProjectDetailPage({
             currency={project.currency}
             defaultSplitMode={project.defaultSplitMode}
           />
+          <SettlementsSection
+            projectId={project._id}
+            currency={project.currency}
+          />
           <Card>
             <p className="text-sm text-muted">
-              Liquidaciones y balance llegan en etapas posteriores.
+              El balance llega en una etapa posterior.
             </p>
           </Card>
         </>
