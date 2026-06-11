@@ -39,12 +39,12 @@ export default function NewProjectForm({ onDone }: { onDone?: () => void }) {
           onDone?.();
           router.push(`/projects/${projectId}`);
         } catch {
-          setError("Could not create the project. Try again.");
+          setError("No se pudo crear el proyecto. Inténtalo de nuevo.");
           setPending(false);
         }
       }}
     >
-      <Field label="Name" htmlFor="project-name">
+      <Field label="Nombre" htmlFor="project-name">
         <Input
           id="project-name"
           value={name}
@@ -55,7 +55,7 @@ export default function NewProjectForm({ onDone }: { onDone?: () => void }) {
         />
       </Field>
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Currency" htmlFor="project-currency">
+        <Field label="Moneda" htmlFor="project-currency">
           <Input
             id="project-currency"
             value={currency}
@@ -64,7 +64,7 @@ export default function NewProjectForm({ onDone }: { onDone?: () => void }) {
             className="uppercase"
           />
         </Field>
-        <Field label="Default split" htmlFor="project-split">
+        <Field label="Reparto predeterminado" htmlFor="project-split">
           <Select
             id="project-split"
             value={defaultSplitMode}
@@ -72,8 +72,8 @@ export default function NewProjectForm({ onDone }: { onDone?: () => void }) {
               setDefaultSplitMode(e.target.value as "equal" | "weighted")
             }
           >
-            <option value="equal">Equal</option>
-            <option value="weighted">Weighted shares</option>
+            <option value="equal">Equitativo</option>
+            <option value="weighted">Ponderado por partes</option>
           </Select>
         </Field>
       </div>
@@ -81,11 +81,11 @@ export default function NewProjectForm({ onDone }: { onDone?: () => void }) {
       <div className="flex justify-end gap-2">
         {onDone && (
           <Button type="button" variant="secondary" onClick={onDone}>
-            Cancel
+            Cancelar
           </Button>
         )}
         <Button type="submit" disabled={pending || name.trim() === ""}>
-          {pending ? "Creating…" : "Create project"}
+          {pending ? "Creando…" : "Crear proyecto"}
         </Button>
       </div>
     </form>

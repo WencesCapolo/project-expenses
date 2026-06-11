@@ -18,11 +18,11 @@ export default function ProjectsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Projects"
-        description="Shared expense workspaces you belong to."
+        title="Proyectos"
+        description="Espacios de gastos compartidos a los que perteneces."
         action={
           !creating && (
-            <Button onClick={() => setCreating(true)}>New project</Button>
+            <Button onClick={() => setCreating(true)}>Nuevo proyecto</Button>
           )
         }
       />
@@ -34,12 +34,13 @@ export default function ProjectsPage() {
       )}
 
       {projects === undefined ? (
-        <p className="text-sm text-muted">Loading…</p>
+        <p className="text-sm text-muted">Cargando…</p>
       ) : projects.length === 0 ? (
         !creating && (
           <Card>
             <p className="text-sm text-muted">
-              No projects yet. Create one to start tracking shared expenses.
+              Aún no hay proyectos. Crea uno para empezar a registrar gastos
+              compartidos.
             </p>
           </Card>
         )
@@ -54,8 +55,8 @@ export default function ProjectsPage() {
                     <span className="text-sm text-muted">
                       {project.currency} ·{" "}
                       {project.defaultSplitMode === "equal"
-                        ? "Equal"
-                        : "Weighted"}
+                        ? "Equitativo"
+                        : "Ponderado"}
                     </span>
                   </div>
                 </Card>

@@ -22,7 +22,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             Convolution.Expenses
           </Link>
           <Button variant="ghost" size="sm" onClick={() => void signOut()}>
-            Sign out
+            Cerrar sesión
           </Button>
         </Container>
       </header>

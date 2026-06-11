@@ -25,8 +25,8 @@ export default function SignInForm() {
         } catch {
           setError(
             flow === "signIn"
-              ? "Could not sign in. Check your credentials."
-              : "Could not sign up. The email may already be in use.",
+              ? "No se pudo iniciar sesión. Revisa tus credenciales."
+              : "No se pudo crear la cuenta. El correo quizás ya está en uso.",
           );
         } finally {
           setPending(false);
@@ -34,13 +34,13 @@ export default function SignInForm() {
       }}
     >
       <h1 className="text-xl font-semibold">
-        {flow === "signIn" ? "Sign in" : "Create account"}
+        {flow === "signIn" ? "Iniciar sesión" : "Crear cuenta"}
       </h1>
       <input
         className="border rounded px-3 py-2"
         type="email"
         name="email"
-        placeholder="Email"
+        placeholder="Correo electrónico"
         autoComplete="email"
         required
       />
@@ -48,7 +48,7 @@ export default function SignInForm() {
         className="border rounded px-3 py-2"
         type="password"
         name="password"
-        placeholder="Password"
+        placeholder="Contraseña"
         autoComplete={flow === "signIn" ? "current-password" : "new-password"}
         required
       />
@@ -57,7 +57,7 @@ export default function SignInForm() {
         type="submit"
         disabled={pending}
       >
-        {flow === "signIn" ? "Sign in" : "Sign up"}
+        {flow === "signIn" ? "Iniciar sesión" : "Registrarse"}
       </button>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button
@@ -66,8 +66,8 @@ export default function SignInForm() {
         onClick={() => setFlow(flow === "signIn" ? "signUp" : "signIn")}
       >
         {flow === "signIn"
-          ? "Need an account? Sign up"
-          : "Have an account? Sign in"}
+          ? "¿No tienes cuenta? Regístrate"
+          : "¿Ya tienes cuenta? Inicia sesión"}
       </button>
     </form>
   );

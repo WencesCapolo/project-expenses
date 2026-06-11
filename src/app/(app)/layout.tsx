@@ -13,7 +13,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <>
       <AuthLoading>
         <div className="flex min-h-full items-center justify-center">
-          <p className="text-sm text-muted">Loading…</p>
+          <p className="text-sm text-muted">Cargando…</p>
         </div>
       </AuthLoading>
       <Unauthenticated>

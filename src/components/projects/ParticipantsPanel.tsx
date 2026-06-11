@@ -36,7 +36,7 @@ export default function ParticipantsPanel({
       await addParticipant({ projectId, email: email.trim().toLowerCase() });
       setEmail("");
     } catch (err) {
-      setAddError(convexErrorMessage(err, "Could not add that participant."));
+      setAddError(convexErrorMessage(err, "No se pudo agregar al participante."));
     } finally {
       setAdding(false);
     }
@@ -50,7 +50,7 @@ export default function ParticipantsPanel({
     } catch (err) {
       setRowError({
         userId,
-        message: convexErrorMessage(err, "Could not remove that participant."),
+        message: convexErrorMessage(err, "No se pudo quitar al participante."),
       });
     } finally {
       setRemovingId(null);
@@ -59,7 +59,7 @@ export default function ParticipantsPanel({
 
   return (
     <Card className="space-y-4">
-      <h2 className="font-medium">Participants</h2>
+      <h2 className="font-medium">Participantes</h2>
 
       <form className="flex gap-2" onSubmit={handleAdd}>
         <Input
@@ -67,17 +67,17 @@ export default function ParticipantsPanel({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="ej. dev@empresa.com"
-          aria-label="Participant email"
+          aria-label="Correo del participante"
           required
         />
         <Button type="submit" disabled={adding || email.trim() === ""}>
-          {adding ? "Adding…" : "Add"}
+          {adding ? "Agregando…" : "Agregar"}
         </Button>
       </form>
       {addError && <p className="text-sm text-danger">{addError}</p>}
 
       {participants === undefined ? (
-        <p className="text-sm text-muted">Loading…</p>
+        <p className="text-sm text-muted">Cargando…</p>
       ) : (
         <ul className="divide-y divide-border">
           {participants.map((p) => (
@@ -85,7 +85,7 @@ export default function ParticipantsPanel({
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
-                    {p.name ?? p.email ?? "Unknown user"}
+                    {p.name ?? p.email ?? "Usuario desconocido"}
                   </p>
                   {p.name && p.email && (
                     <p className="truncate text-sm text-muted">{p.email}</p>
@@ -97,7 +97,7 @@ export default function ParticipantsPanel({
                   disabled={removingId === p.userId}
                   onClick={() => handleRemove(p.userId)}
                 >
-                  {removingId === p.userId ? "Removing…" : "Remove"}
+                  {removingId === p.userId ? "Quitando…" : "Quitar"}
                 </Button>
               </div>
               {rowError?.userId === p.userId && (

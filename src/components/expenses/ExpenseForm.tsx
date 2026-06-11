@@ -33,7 +33,7 @@ function buildRows(
     );
     return {
       userId: p.userId,
-      label: p.name ?? p.email ?? "Unknown user",
+      label: p.name ?? p.email ?? "Usuario desconocido",
       included: expense ? onExpense !== undefined : true,
       shares: onExpense?.shares ? String(onExpense.shares) : "1",
     };
@@ -121,15 +121,15 @@ export default function ExpenseForm({
     setError(null);
 
     if (payerId === "") {
-      setError("Choose a payer.");
+      setError("Elige un pagador.");
       return;
     }
     if (amountCents === null) {
-      setError("Enter a positive amount (up to two decimals).");
+      setError("Ingresa un monto positivo (hasta dos decimales).");
       return;
     }
     if (included.length === 0) {
-      setError("Select at least one beneficiary.");
+      setError("Selecciona al menos un beneficiario.");
       return;
     }
     const beneficiaries = included.map((r) => ({
@@ -140,7 +140,7 @@ export default function ExpenseForm({
       mode === "weighted" &&
       beneficiaries.some((b) => !Number.isInteger(b.shares) || (b.shares ?? 0) <= 0)
     ) {
-      setError("Weighted shares must be positive whole numbers.");
+      setError("Las partes ponderadas deben ser números enteros positivos.");
       return;
     }
 
@@ -172,14 +172,14 @@ export default function ExpenseForm({
       }
       onDone();
     } catch (err) {
-      setError(convexErrorMessage(err, "Could not save the expense."));
+      setError(convexErrorMessage(err, "No se pudo guardar el gasto."));
       setPending(false);
     }
   }
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      <Field label="Title" htmlFor="expense-title">
+      <Field label="Título" htmlFor="expense-title">
         <Input
           id="expense-title"
           value={title}
@@ -190,7 +190,7 @@ export default function ExpenseForm({
         />
       </Field>
 
-      <Field label="Note (optional)" htmlFor="expense-note">
+      <Field label="Nota (opcional)" htmlFor="expense-note">
         <Input
           id="expense-note"
           value={note}
@@ -200,7 +200,7 @@ export default function ExpenseForm({
       </Field>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Field label={`Amount (${currency})`} htmlFor="expense-amount">
+        <Field label={`Monto (${currency})`} htmlFor="expense-amount">
           <Input
             id="expense-amount"
             inputMode="decimal"
@@ -210,7 +210,7 @@ export default function ExpenseForm({
             required
           />
         </Field>
-        <Field label="Payer" htmlFor="expense-payer">
+        <Field label="Pagador" htmlFor="expense-payer">
           <Select
             id="expense-payer"
             value={payerId}
@@ -218,12 +218,12 @@ export default function ExpenseForm({
           >
             {participants.map((p) => (
               <option key={p.userId} value={p.userId}>
-                {p.name ?? p.email ?? "Unknown user"}
+                {p.name ?? p.email ?? "Usuario desconocido"}
               </option>
             ))}
           </Select>
         </Field>
-        <Field label="Month" htmlFor="expense-month">
+        <Field label="Mes" htmlFor="expense-month">
           <Input
             id="expense-month"
             type="month"
@@ -234,19 +234,19 @@ export default function ExpenseForm({
         </Field>
       </div>
 
-      <Field label="Split" htmlFor="expense-split-mode">
+      <Field label="Reparto" htmlFor="expense-split-mode">
         <Select
           id="expense-split-mode"
           value={mode}
           onChange={(e) => setMode(e.target.value as SplitMode)}
         >
-          <option value="equal">Equal</option>
-          <option value="weighted">Weighted shares</option>
+          <option value="equal">Equitativo</option>
+          <option value="weighted">Ponderado por partes</option>
         </Select>
       </Field>
 
       <fieldset className="rounded-[var(--radius)] border border-border p-3">
-        <legend className="px-1 text-sm font-medium">Beneficiaries</legend>
+        <legend className="px-1 text-sm font-medium">Beneficiarios</legend>
         <ul className="divide-y divide-border">
           {rows.map((row) => (
             <li
@@ -273,7 +273,7 @@ export default function ExpenseForm({
                     onChange={(e) =>
                       setRow(row.userId, { shares: e.target.value })
                     }
-                    aria-label={`Shares for ${row.label}`}
+                    aria-label={`Partes de ${row.label}`}
                     className="h-8 w-16 rounded-[var(--radius)] border border-border bg-surface px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 )}
@@ -288,7 +288,7 @@ export default function ExpenseForm({
         </ul>
       </fieldset>
 
-      <Field label="Attachments (optional)" htmlFor="expense-attachments">
+      <Field label="Adjuntos (opcional)" htmlFor="expense-attachments">
         <div id="expense-attachments">
           <AttachmentsField
             value={attachments}
@@ -302,10 +302,10 @@ export default function ExpenseForm({
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onDone}>
-          Cancel
+          Cancelar
         </Button>
         <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : expense ? "Save changes" : "Add expense"}
+          {pending ? "Guardando…" : expense ? "Guardar cambios" : "Agregar gasto"}
         </Button>
       </div>
     </form>

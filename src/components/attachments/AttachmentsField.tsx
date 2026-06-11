@@ -47,7 +47,7 @@ export default function AttachmentsField({
       }
       onChange([...value, ...uploaded]);
     } catch (err) {
-      setError(convexErrorMessage(err, "Could not upload one or more files."));
+      setError(convexErrorMessage(err, "No se pudieron subir uno o más archivos."));
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -73,7 +73,7 @@ export default function AttachmentsField({
         }}
         className="text-sm file:mr-3 file:rounded-[var(--radius)] file:border file:border-border file:bg-surface file:px-3 file:py-1.5 file:text-sm hover:file:bg-surface-muted"
       />
-      {uploading && <p className="text-sm text-muted">Uploading…</p>}
+      {uploading && <p className="text-sm text-muted">Subiendo…</p>}
       {error && <p className="text-sm text-danger">{error}</p>}
       {value.length > 0 && (
         <ul className="flex flex-col gap-1">
@@ -82,7 +82,7 @@ export default function AttachmentsField({
               key={id}
               className="flex items-center justify-between gap-3 text-sm"
             >
-              <span className="truncate text-muted">Attachment {index + 1}</span>
+              <span className="truncate text-muted">Adjunto {index + 1}</span>
               <Button
                 type="button"
                 variant="ghost"
@@ -90,7 +90,7 @@ export default function AttachmentsField({
                 disabled={disabled || uploading}
                 onClick={() => remove(id)}
               >
-                Remove
+                Quitar
               </Button>
             </li>
           ))}

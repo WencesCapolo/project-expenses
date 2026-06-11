@@ -20,7 +20,7 @@ export default function AttachmentList({
 
   if (storageIds.length === 0) return null;
   if (resolved === undefined) {
-    return <p className="text-sm text-muted">Loading attachments…</p>;
+    return <p className="text-sm text-muted">Cargando adjuntos…</p>;
   }
 
   return (
@@ -34,7 +34,7 @@ export default function AttachmentList({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 rounded-[var(--radius)] border border-border px-2 py-1 text-sm text-primary hover:bg-surface-muted"
             >
-              Attachment {index + 1} ↗
+              Adjunto {index + 1} ↗
             </a>
           </li>
         ) : null,

@@ -51,7 +51,7 @@ export default function ExpensesSection({
     try {
       await remove({ expenseId: expense._id });
     } catch (err) {
-      setRowError(convexErrorMessage(err, "Could not delete the expense."));
+      setRowError(convexErrorMessage(err, "No se pudo eliminar el gasto."));
     }
   }
 
@@ -60,18 +60,18 @@ export default function ExpensesSection({
   return (
     <Card className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-medium">Expenses</h2>
+        <h2 className="font-medium">Gastos</h2>
         <div className="flex items-center gap-2">
           <Input
             type="month"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            aria-label="Month"
+            aria-label="Mes"
             className="w-auto"
           />
           {editing === null && (
             <Button size="sm" disabled={!canAdd} onClick={() => setEditing("new")}>
-              Add expense
+              Agregar gasto
             </Button>
           )}
         </div>
@@ -93,9 +93,9 @@ export default function ExpensesSection({
       {rowError && <p className="text-sm text-danger">{rowError}</p>}
 
       {expenses === undefined ? (
-        <p className="text-sm text-muted">Loading…</p>
+        <p className="text-sm text-muted">Cargando…</p>
       ) : expenses.length === 0 ? (
-        <p className="text-sm text-muted">No expenses for {period}.</p>
+        <p className="text-sm text-muted">Sin gastos para {period}.</p>
       ) : (
         <ul className="divide-y divide-border">
           {expenses.map((expense) =>
@@ -121,9 +121,9 @@ export default function ExpensesSection({
                       {expense.title}
                     </p>
                     <p className="truncate text-sm text-muted">
-                      {nameByUser.get(expense.payerId) ?? "Unknown"} paid ·{" "}
-                      {expense.split.mode === "equal" ? "Equal" : "Weighted"} ·{" "}
-                      {expense.split.beneficiaries.length} beneficiaries
+                      {nameByUser.get(expense.payerId) ?? "Desconocido"} pagó ·{" "}
+                      {expense.split.mode === "equal" ? "Equitativo" : "Ponderado"}{" "}
+                      · {expense.split.beneficiaries.length} beneficiarios
                     </p>
                     {expense.note && (
                       <p className="truncate text-sm text-muted">{expense.note}</p>
@@ -147,7 +147,7 @@ export default function ExpensesSection({
                     disabled={editing !== null}
                     onClick={() => setEditing(expense._id)}
                   >
-                    Edit
+                    Editar
                   </Button>
                   <Button
                     variant="ghost"
@@ -155,7 +155,7 @@ export default function ExpensesSection({
                     disabled={editing !== null}
                     onClick={() => handleDelete(expense)}
                   >
-                    Delete
+                    Eliminar
                   </Button>
                 </div>
               </li>

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Convolution.Expenses",
-  description: "Track and settle shared project expenses",
+  description: "Registra y liquida gastos compartidos de proyectos",
 };
 
 export default function RootLayout({

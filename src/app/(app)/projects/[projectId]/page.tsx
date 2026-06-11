@@ -26,23 +26,25 @@ export default function ProjectDetailPage({
   return (
     <div className="space-y-6">
       <Link href="/projects" className="text-sm text-muted hover:text-foreground">
-        ← Back to projects
+        ← Volver a proyectos
       </Link>
 
       {project === undefined ? (
-        <p className="text-sm text-muted">Loading…</p>
+        <p className="text-sm text-muted">Cargando…</p>
       ) : project === null ? (
         <Card>
           <p className="text-sm text-muted">
-            Project not found, or you don&apos;t have access.
+            Proyecto no encontrado, o no tienes acceso.
           </p>
         </Card>
       ) : (
         <>
           <PageHeader
             title={project.name}
-            description={`${project.currency} · Default split: ${
-              project.defaultSplitMode === "equal" ? "Equal" : "Weighted shares"
+            description={`${project.currency} · Reparto predeterminado: ${
+              project.defaultSplitMode === "equal"
+                ? "Equitativo"
+                : "Ponderado por partes"
             }`}
           />
           <ParticipantsPanel projectId={project._id} />
@@ -53,7 +55,7 @@ export default function ProjectDetailPage({
           />
           <Card>
             <p className="text-sm text-muted">
-              Incomes, settlements and balance arrive in later slices.
+              Ingresos, liquidaciones y balance llegan en etapas posteriores.
             </p>
           </Card>
         </>
