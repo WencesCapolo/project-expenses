@@ -12,6 +12,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Field from "@/components/ui/Field";
+import AttachmentsField from "@/components/attachments/AttachmentsField";
 
 type SplitMode = "equal" | "weighted";
 
@@ -77,6 +78,9 @@ export default function ExpenseForm({
   );
   const [rows, setRows] = useState<Row[]>(() =>
     buildRows(participants, expense),
+  );
+  const [attachments, setAttachments] = useState<Id<"_storage">[]>(
+    expense?.attachments ?? [],
   );
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -152,7 +156,7 @@ export default function ExpenseForm({
           payerId,
           split,
           period,
-          attachments: expense.attachments,
+          attachments,
         });
       } else {
         await create({
@@ -163,7 +167,7 @@ export default function ExpenseForm({
           payerId,
           split,
           period,
-          attachments: [],
+          attachments,
         });
       }
       onDone();
@@ -180,7 +184,7 @@ export default function ExpenseForm({
           id="expense-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. Dinner"
+          placeholder="ej. Suscripción a Figma"
           required
           autoFocus
         />
@@ -191,7 +195,7 @@ export default function ExpenseForm({
           id="expense-note"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Anything worth remembering"
+          placeholder="ej. Plan anual del equipo"
         />
       </Field>
 
@@ -283,6 +287,16 @@ export default function ExpenseForm({
           ))}
         </ul>
       </fieldset>
+
+      <Field label="Attachments (optional)" htmlFor="expense-attachments">
+        <div id="expense-attachments">
+          <AttachmentsField
+            value={attachments}
+            onChange={setAttachments}
+            disabled={pending}
+          />
+        </div>
+      </Field>
 
       {error && <p className="text-sm text-danger">{error}</p>}
 

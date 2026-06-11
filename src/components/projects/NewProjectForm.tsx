@@ -49,7 +49,7 @@ export default function NewProjectForm({ onDone }: { onDone?: () => void }) {
           id="project-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Lisbon trip"
+          placeholder="ej. App de delivery"
           required
           autoFocus
         />

@@ -10,6 +10,7 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import ExpenseForm from "@/components/expenses/ExpenseForm";
+import AttachmentList from "@/components/attachments/AttachmentList";
 
 type SplitMode = "equal" | "weighted";
 
@@ -126,6 +127,11 @@ export default function ExpensesSection({
                     </p>
                     {expense.note && (
                       <p className="truncate text-sm text-muted">{expense.note}</p>
+                    )}
+                    {expense.attachments.length > 0 && (
+                      <div className="mt-2">
+                        <AttachmentList storageIds={expense.attachments} />
+                      </div>
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">

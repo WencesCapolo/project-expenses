@@ -66,7 +66,7 @@ export default function ParticipantsPanel({
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Add by email"
+          placeholder="ej. dev@empresa.com"
           aria-label="Participant email"
           required
         />
