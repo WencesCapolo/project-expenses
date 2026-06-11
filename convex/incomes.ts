@@ -1,0 +1,86 @@
+import { v } from "convex/values";
+import { Doc } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
+import { requireParticipant } from "./lib/access";
+import { assertValidItem } from "./lib/items";
+import { attachmentsValidator, splitValidator } from "./lib/validators";
+
+// Record money from outside the group, held by one Recipient and credited to
+// the Beneficiaries — the mirror of an Expense. CONTEXT.md → Income.
+export const create = mutation({
+  args: {
+    projectId: v.id("projects"),
+    title: v.string(),
+    description: v.string(),
+    amountCents: v.number(),
+    recipientId: v.id("users"),
+    split: splitValidator,
+    period: v.string(),
+    attachments: attachmentsValidator,
+  },
+  handler: async (ctx, args) => {
+    const registrarId = await requireParticipant(ctx, args.projectId);
+    await assertValidItem(ctx, {
+      projectId: args.projectId,
+      amountCents: args.amountCents,
+      period: args.period,
+      actorId: args.recipientId,
+      split: args.split,
+    });
+    return ctx.db.insert("incomes", { ...args, registrarId });
+  },
+});
+
+export const listByPeriod = query({
+  args: { projectId: v.id("projects"), period: v.string() },
+  handler: async (ctx, { projectId, period }): Promise<Doc<"incomes">[]> => {
+    await requireParticipant(ctx, projectId);
+    return ctx.db
+      .query("incomes")
+      .withIndex("by_project_period", (q) =>
+        q.eq("projectId", projectId).eq("period", period),
+      )
+      .collect();
+  },
+});
+
+// Items are freely editable — nothing is ever frozen. CONTEXT.md → Period.
+export const update = mutation({
+  args: {
+    incomeId: v.id("incomes"),
+    title: v.string(),
+    description: v.string(),
+    amountCents: v.number(),
+    recipientId: v.id("users"),
+    split: splitValidator,
+    period: v.string(),
+    attachments: attachmentsValidator,
+  },
+  handler: async (ctx, { incomeId, ...fields }) => {
+    const income = await ctx.db.get(incomeId);
+    if (income === null) {
+      throw new Error("Income not found");
+    }
+    await requireParticipant(ctx, income.projectId);
+    await assertValidItem(ctx, {
+      projectId: income.projectId,
+      amountCents: fields.amountCents,
+      period: fields.period,
+      actorId: fields.recipientId,
+      split: fields.split,
+    });
+    await ctx.db.patch(incomeId, fields);
+  },
+});
+
+export const remove = mutation({
+  args: { incomeId: v.id("incomes") },
+  handler: async (ctx, { incomeId }) => {
+    const income = await ctx.db.get(incomeId);
+    if (income === null) {
+      return;
+    }
+    await requireParticipant(ctx, income.projectId);
+    await ctx.db.delete(incomeId);
+  },
+});

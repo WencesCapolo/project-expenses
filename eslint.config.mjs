@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Convex codegen and local temp — not ours to lint.
+    "convex/_generated/**",
+    ".convex-tmp/**",
   ]),
 ]);
 
