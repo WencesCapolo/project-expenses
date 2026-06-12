@@ -42,3 +42,5 @@ next-env.d.ts
 
 # Convex local temp (CONVEX_TMPDIR)
 .convex-tmp/
+
+public/WhatsApp*

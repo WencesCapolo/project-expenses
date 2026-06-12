@@ -7,6 +7,7 @@ import { api } from "../../../../convex/_generated/api";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import IconBadge from "@/components/ui/IconBadge";
 import NewProjectForm from "@/components/projects/NewProjectForm";
 
 // Projects home: the Projects the signed-in User participates in, plus a
@@ -50,14 +51,20 @@ export default function ProjectsPage() {
             <li key={project._id}>
               <Link href={`/projects/${project._id}`} className="block">
                 <Card className="transition-colors hover:border-primary">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium">{project.name}</span>
-                    <span className="text-sm text-muted">
-                      {project.currency} ·{" "}
-                      {project.defaultSplitMode === "equal"
-                        ? "Equitativo"
-                        : "Ponderado"}
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <IconBadge tone="primary">
+                      {project.name.charAt(0).toUpperCase()}
+                    </IconBadge>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{project.name}</p>
+                      <p className="truncate text-sm text-muted">
+                        {project.currency} ·{" "}
+                        {project.defaultSplitMode === "equal"
+                          ? "Equitativo"
+                          : "Ponderado"}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-lg text-muted">›</span>
                   </div>
                 </Card>
               </Link>

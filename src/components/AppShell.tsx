@@ -17,11 +17,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <Container className="flex h-14 items-center justify-between">
           <Link
             href="/projects"
-            className="font-semibold tracking-tight hover:opacity-80"
+            className="flex items-center gap-2 font-semibold tracking-tight hover:opacity-80"
           >
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-sm text-primary-foreground">
+              C
+            </span>
             Convolution.Expenses
           </Link>
-          <Button variant="ghost" size="sm" onClick={() => void signOut()}>
+          <Button variant="secondary" size="sm" onClick={() => void signOut()}>
             Cerrar sesión
           </Button>
         </Container>

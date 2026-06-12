@@ -8,9 +8,7 @@ import { Id } from "../../../../../convex/_generated/dataModel";
 import PageHeader from "@/components/ui/PageHeader";
 import Card from "@/components/ui/Card";
 import ParticipantsPanel from "@/components/projects/ParticipantsPanel";
-import ExpensesSection from "@/components/expenses/ExpensesSection";
-import IncomesSection from "@/components/incomes/IncomesSection";
-import SettlementsSection from "@/components/settlements/SettlementsSection";
+import MovementsFeed from "@/components/feed/MovementsFeed";
 import SettleSection from "@/components/settle/SettleSection";
 
 // Project detail. Reads projects.get, which also enforces the viewer is a
@@ -51,19 +49,10 @@ export default function ProjectDetailPage({
             }`}
           />
           <ParticipantsPanel projectId={project._id} />
-          <ExpensesSection
+          <MovementsFeed
             projectId={project._id}
             currency={project.currency}
             defaultSplitMode={project.defaultSplitMode}
-          />
-          <IncomesSection
-            projectId={project._id}
-            currency={project.currency}
-            defaultSplitMode={project.defaultSplitMode}
-          />
-          <SettlementsSection
-            projectId={project._id}
-            currency={project.currency}
           />
           <SettleSection projectId={project._id} currency={project.currency} />
         </>
